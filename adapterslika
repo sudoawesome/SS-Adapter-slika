@@ -1,0 +1,7 @@
+#!/bin/bash --
+
+WEB_LOKACIJA='/home/korisnik/slike/'
+EKSTENZIJE=$(find $WEB_LOKACIJA | grep -Po '.*\.(jpg|jpeg|gif)')
+IFS=$'\n'
+
+for SLIKE in $EKSTENZIJE;

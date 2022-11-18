@@ -1,7 +1,23 @@
-#!/bin/bash --
+#!/bin/bash
 
 WEB_LOKACIJA='/home/korisnik/slike/'
 EKSTENZIJE=$(find $WEB_LOKACIJA | grep -Po '.*\.(jpg|jpeg|gif)')
 IFS=$'\n'
 
 for SLIKE in $EKSTENZIJE;
+
+do
+sirina=`identify $SLIKE | cut -f 3 -d " " | sed s/x.*//`
+visina=`identify $SLIKE | cut -f 3 -d " " | sed s/.*x//`
+
+if [ $sirina -le 250 -a $visina -le 250  ]; then
+
+echo "Preskačem - Slike su suviše male za promenu."
+
+else
+
+####
+
+fi
+
+done

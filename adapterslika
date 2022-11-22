@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash --
 
 WEB_LOKACIJA='/home/korisnik/slike/'
 EKSTENZIJE=$(find $WEB_LOKACIJA | grep -Po '.*\.(jpg|jpeg|gif)')
@@ -7,16 +7,21 @@ IFS=$'\n'
 for SLIKE in $EKSTENZIJE;
 
 do
-sirina=`identify $SLIKE | cut -f 3 -d " " | sed s/x.*//`
-visina=`identify $SLIKE | cut -f 3 -d " " | sed s/.*x//`
+sirina=`identify $SLIKE | awk '{print $3}' | sed s/x.*//`
+visina=`identify $SLIKE | awk '{print $3}' | sed s/.*x//`
 
 if [ $sirina -le 250 -a $visina -le 250  ]; then
 
 echo "Preskačem - Slike su suviše male za promenu."
 
+elif [ $sirina -eq 800 -a $visina -eq 600  ]; then
+
+echo "Preskačem - Slike su tražene veličine."
+
 else
 
-####
+echo "Menjam veličinu za sliku: $SLIKE"
+mogrify -strip -resize 500x500 -extent 800x600 -gravity center -background white $SLIKE
 
 fi
 

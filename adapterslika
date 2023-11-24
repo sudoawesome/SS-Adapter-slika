@@ -18,7 +18,7 @@ if [[ -z "$1" ]]; then
     exit
 fi
 
-EKSTENZIJE=$(find $WEB_LOKACIJA | grep -Po '.*\.(jpg|jpeg|gif)')
+EKSTENZIJE=$(find $WEB_LOKACIJA | grep -Po '.*\.(jpg|jpeg|gif|png|webp)')
 IFS=$'\n'
 
 for SLIKE in $EKSTENZIJE;

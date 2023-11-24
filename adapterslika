@@ -1,6 +1,23 @@
 #!/bin/bash --
 
-WEB_LOKACIJA='/home/korisnik/slike/'
+#
+#	Script Name: SS Adapter slika
+#	Description: Skripta za readaptaciju veličina slika
+#	Author: Sajber Sove
+#	Author URI: https://sajbersove.rs/
+#	Version: 1.1
+#	License: GPLv2
+#
+
+# Web Folder Lokacija Slika
+#
+WEB_LOKACIJA=$1
+
+if [[ -z "$1" ]]; then
+    echo 'ERROR - Lokacija nije navedena. Potrebno je: ./ssadapterslika /putanja/do/foldera';
+    exit
+fi
+
 EKSTENZIJE=$(find $WEB_LOKACIJA | grep -Po '.*\.(jpg|jpeg|gif)')
 IFS=$'\n'
 

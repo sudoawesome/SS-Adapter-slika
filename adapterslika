@@ -26,8 +26,8 @@ IFS=$'\n'
 for SLIKE in $EKSTENZIJE;
 
 do
-sirina=`identify $SLIKE | grep -Po '(?<=\s)\d+x\d+(?=\s)' | sed s/x.*//`
-visina=`identify $SLIKE | grep -Po '(?<=\s)\d+x\d+(?=\s)' | sed s/.*x//`
+sirina=$(identify -format "%w" $SLIKE)
+visina=$(identify -format "%h" $SLIKE)
 
 if [ $sirina -le 250 -a $visina -le 250  ]; then
 

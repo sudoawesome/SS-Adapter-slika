@@ -16,7 +16,7 @@ WEB_LOKACIJA=$1
 BOJA_POZADINE='#FFFFFF'# transparent - za providno
 
 if [[ -z "$1" ]]; then
-    echo 'ERROR - Lokacija nije navedena. Potrebno je: ./ssadapterslika /putanja/do/foldera';
+    echo 'ERROR - Lokacija nije navedena. Potrebno je: ./adapterslika /putanja/do/foldera';
     exit
 fi
 

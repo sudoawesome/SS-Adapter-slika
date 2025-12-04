@@ -1,47 +1,42 @@
-#!/bin/bash --
-
-#
-#	Script Name: SS Adapter slika
-#	Description: Skripta za readaptaciju veličina slika
-#	Author: Sajber Sove
-#	Author URI: https://sajbersove.rs/
-#	Version: 1.1
-#	License: GPLv2
-#
+#!/bin/bash
 
 # Folder lokacija gde se slike nalaze
-WEB_LOKACIJA=$1
+WEB_LOKACIJA="$1"
 
 # Boja pozadine slika
 BOJA_POZADINE='#FFFFFF' # transparent - za providno
 
-if [[ -z "$1" ]]; then
-    echo 'ERROR - Lokacija nije navedena. Potrebno je: ./adapterslika /putanja/do/foldera';
-    exit
+if [[ -z "$WEB_LOKACIJA" ]]; then
+    echo 'ERROR - Lokacija nije navedena. Potrebno je: ./adapterslika /putanja/do/foldera'
+    exit 1
 fi
 
-EKSTENZIJE=$(find $WEB_LOKACIJA | grep -Po '.*\.(jpg|jpeg|gif|png|webp)')
-IFS=$'\n'
+while IFS= read -r -d '' SLIKE; do
 
-for SLIKE in $EKSTENZIJE;
+    # Skip za .comments
+    if [[ "$SLIKE" == */.comments/* ]]; then
+        echo "Preskačem komentar fajl: $SLIKE"
+        continue
+    fi
 
-do
-sirina=$(identify -format "%w" $SLIKE)
-visina=$(identify -format "%h" $SLIKE)
+    # Uzmi dimenzije
+    sirina=$(identify -format "%w" "$SLIKE" 2>/dev/null)
+    visina=$(identify -format "%h" "$SLIKE" 2>/dev/null)
 
-if [ $sirina -le 250 -a $visina -le 250  ]; then
+    # Validacija za brojeve
+    if ! [[ "$sirina" =~ ^[0-9]+$ && "$visina" =~ ^[0-9]+$ ]]; then
+        echo "Preskačem - Ne mogu da pročitam sliku: '$SLIKE'"
+        continue
+    fi
 
-echo "Preskačem - Slike su suviše male za promenu."
+    # Poređenje i adaptacija
+    if [[ $sirina -le 250 && $visina -le 250 ]]; then
+        echo "Preskačem - Slika suviše mala: '$SLIKE'"
+    elif [[ $sirina -eq 1100 && $visina -eq 800 ]]; then
+        echo "Preskačem - Slika je već tražene veličine: '$SLIKE'"
+    else
+        echo "Menjam veličinu za sliku: '$SLIKE'"
+        mogrify -strip -resize 820x820 -extent 1100x800 -gravity center -background "$BOJA_POZADINE" "$SLIKE"
+    fi
 
-elif [ $sirina -eq 800 -a $visina -eq 600  ]; then
-
-echo "Preskačem - Slike su tražene veličine."
-
-else
-
-echo "Menjam veličinu za sliku: $SLIKE"
-mogrify -strip -resize 500x500 -extent 800x600 -gravity center -background $BOJA_POZADINE $SLIKE
-
-fi
-
-done
+done < <(find "$WEB_LOKACIJA" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.gif" -o -iname "*.png" -o -iname "*.webp" \) -print0)
